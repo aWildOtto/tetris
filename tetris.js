@@ -29,7 +29,7 @@ function getKey(key) {
 	}
 	if (key.key == "ArrowDown") {
 		console.log("speedUp");
-		currentShape.shift([0, -10]);
+		currentShape.shift([0, -20]);
 		render(currentShape);
 	}
 }
@@ -56,13 +56,13 @@ window.onload = function init() {
 
 	currentShape = new Shape();// a random shape
 
-	currentShape.shift([0, 20]);
+	currentShape.shift([0, 40]);
 
 	mainLoop();
 };
 
 function mainLoop() {
-	currentShape.shift([0, -10]);
+	currentShape.shift([0, -20]);
 	render(currentShape);
 
 	setTimeout(() => {
