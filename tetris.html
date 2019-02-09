@@ -27,10 +27,16 @@ main()
 <script type="text/javascript" src="Common/initShaders.js"></script>
 <script type="text/javascript" src="Common/MV.js"></script>
 <script type="text/javascript" src="Common/shapes.js"></script>
-<script type="text/javascript" src="Common/blocks.js"></script>
+<script type="text/javascript" src="Common/game.js"></script>
 <script type="text/javascript" src="tetris.js"></script>
 
 <body>
+    <div>Tetris</div>
+    <div id="gameStatus">...</div>
+    <div id="score">0</div>
+    <div>
+        <button id="restartBtn" onclick="startGame()">Restart</button>
+    </div>
     <canvas id="gl-canvas" width="512" height="1024" style="border:7px solid grey">
         >
         Oops ... your browser doesn't support the HTML5 canvas element

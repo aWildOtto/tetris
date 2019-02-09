@@ -6,6 +6,9 @@ var program
 var vBuffer;
 var dropSpeed = 1500;//ms
 var stackedBlocks = [];
+var currentShape;
+var currentGame;
+var gameStatus = true;
 
 // Getting the keyboard input
 window.addEventListener("keydown", getKey, false);
@@ -15,38 +18,40 @@ function getKey(key) {
 	if (key.key == "ArrowUp") {
 		console.log("rotate");
 		currentShape.rotate();
-		render(currentShape);
+		render(currentGame);
 	}
 	if (key.key == "ArrowLeft") {
 		console.log("left");
-		currentShape.shift([-20, 0]);
-		render(currentShape);
+		currentShape.shiftByX(-1);
+		render(currentGame);
 	}
 	if (key.key == "ArrowRight") {
 		console.log("right");
-		currentShape.shift([20, 0]);
-		render(currentShape);
+		currentShape.shiftByX(1);
+		render(currentGame);
 	}
 	if (key.key == "ArrowDown") {
 		console.log("speedUp");
-		currentShape.shift([0, -20]);
-		render(currentShape);
+		if (!currentShape.shiftByY(1)) {
+			currentShape.getNewShape();
+		}
+		render(currentGame);
 	}
 }
 
 
-function getGridVertices(){
+function getGridVertices() {
 	var gridVertices = [];
 	var xStartingPoint = -100;
 	var yStartingPoint = -200;
 	var xStepSize = 20;
 	var yStepSize = 20;
-	for(i = 0; i < 10; i ++){
+	for (i = 0; i < 10; i++) {
 		var x = xStartingPoint + xStepSize * i;
 		gridVertices.push(vec2(x, -200));
 		gridVertices.push(vec2(x, 200));
 	}
-	for(i = 0; i < 20; i++){
+	for (i = 0; i < 20; i++) {
 		var y = yStartingPoint + yStepSize * i;
 		gridVertices.push(vec2(-200, y));
 		gridVertices.push(vec2(200, y));
@@ -54,19 +59,19 @@ function getGridVertices(){
 	return gridVertices;
 }
 
-function drawGrid(){
+function drawGrid() {
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(getGridVertices()), gl.STATIC_DRAW);
 	gl.drawArrays(gl.LINES, 0, 60);
 }
 
-function randomColor(){
+function randomColor() {
 	var r = Math.random();
 	var g = Math.random();
 	var b = Math.random();
 	return vec4(r, g, b, 1.0);
 }
 
-var currentShape;
+
 window.onload = function init() {
 
 	canvas = document.getElementById("gl-canvas");
@@ -85,33 +90,38 @@ window.onload = function init() {
 	program = initShaders(gl, "vertex-shader", "fragment-shader");
 	gl.useProgram(program);
 
-	currentShape = new Shape();// a random shape
-
-	currentShape.shift([0, 40]);
+	startGame();
+};
+function startGame() {
+	currentGame = new Game();
+	currentShape = new Shape(currentGame);// a random shape
 
 	mainLoop();
-};
-
+}
 function mainLoop() {
-	currentShape.shift([0, -20]);
-	render(currentShape);
+	if (!gameStatus) {
+		return;
+	}
+	render(currentGame);
+	if (!currentShape.shiftByY(1)) {//the shape can't move anymore
+		if (!currentShape.getNewShape()) {
+			//game lost. A new shape is stuck at starting point 
+			document.getElementById("gameStatus").innerHTML = "You lost";
+			gameStatus = false;
+		}
+	}
 
 	setTimeout(() => {
 		window.requestAnimFrame(mainLoop);
 	}, dropSpeed);
 }
 
-function render(currentShape) {
+function render(currentGame) {
 
 	// Binding the vertex buffer
 	gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
 
-	var allBlocks = [];
-	currentShape.getAllBlocks().forEach(block => {
-		block.forEach((v) => {
-			allBlocks.push(v);
-		});
-	});
+	var allBlocks = currentGame.getAllBlockVertices();
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(allBlocks), gl.STATIC_DRAW);
 
 	// Associate out shader variables with our data buffer
@@ -127,5 +137,6 @@ function render(currentShape) {
 	gl.drawArrays(gl.TRIANGLES, 0, allBlocks.length);
 
 	drawGrid();
+	console.log("------------render cycle complete------------");
 
 }
