@@ -20,13 +20,14 @@ function Shape() {
 				var newV = add(v, u);
 				return newV;
 			});
-			if (that.blockPile.checkForClash(block)) {
-				clashed = true;
-			}
+			clashed = that.blockPile.checkForClash(newBlock);
 			return newBlock;
 		});
 		if (!clashed) {
 			this.shape = shifted_shape;
+		} else {
+			this.die(this.blockPile);
+			return;
 		}
 	}
 	this.die = function () {
