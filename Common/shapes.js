@@ -30,15 +30,15 @@ function Shape(game) {
 		}
 		var newShape = [];
 		for (let index of this.shape) {
-			console.log("touch down", index + 10 * s);
 			if (index + (10 * s) > 199) {
+				console.log("touch down", index + 10 * s);
 				return false;
 			}
 		}
 		occupyShape(this.shape, false);
 		for (let index of this.shape) {
-			console.log("overlap", index + 10 * s);
 			if (game.checkOccupy(index + 10 * s)) {
+				console.log("overlap", index + 10 * s);
 				occupyShape(this.shape, true);
 				return false;
 			}
@@ -51,9 +51,12 @@ function Shape(game) {
 		return true;
 	}
 	this.getNewShape = function () {
-		game.checkCompleteRow();
+		var clearedRowNum = game.checkCompleteRow();
 		this.shape = genRandomShape();
-		return !!this.shape;
+		if (!this.shape) {
+			return -1;
+		}
+		return clearedRowNum;
 	}
 	function occupyShape(shape, o) {
 		shape.forEach((v) => {

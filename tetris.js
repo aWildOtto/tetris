@@ -5,10 +5,12 @@ var gl;
 var program
 var vBuffer;
 var dropSpeed = 1500;//ms
+var gameLevel = 1;
 var stackedBlocks = [];
 var currentShape;
 var currentGame;
-var gameStatus = true;
+var gameStatus = "...";
+var score = 0;
 
 // Getting the keyboard input
 window.addEventListener("keydown", getKey, false);
@@ -32,14 +34,61 @@ function getKey(key) {
 	}
 	if (key.key == "ArrowDown") {
 		console.log("speedUp");
-		if (!currentShape.shiftByY(1)) {
-			currentShape.getNewShape();
-		}
+		dropCurrentShape(currentShape);
 		render(currentGame);
 	}
 }
 
-
+function dropCurrentShape(currentShape) {
+	if (!gameStatus) {
+		return;
+	}
+	if (!currentShape.shiftByY(1)) {//the shape can't move anymore
+		var clearedRowNum = currentShape.getNewShape();//either # of row cleared or false if shape stuck
+		if (clearedRowNum == -1) {
+			//game lost. A new shape is stuck at starting point 
+			document.getElementById("gameStatus").innerHTML = "You lost";
+			gameStatus = false;
+		} else {
+			updateGameBoard(clearedRowNum);
+		}
+	}
+}
+function updateGameStatus(string) {
+	document.getElementById("gameStatus").innerHTML = string;
+}
+function updateGameBoard(row) {
+	var scoreEarned = 0;
+	var newScore = 0;
+	if (row > 0) {
+		scoreEarned = row * 100 + (row - 1) * 50
+		newScore = score + scoreEarned;
+		if (Math.floor(newScore / 500) > Math.floor(score / 500)) {
+			dropSpeed -= 100;
+			console.log("new level");
+			gameLevel++;
+			document.getElementById("level").innerHTML = gameLevel;
+		}
+		score = newScore;
+		document.getElementById("score").innerHTML = score;
+	}
+	switch (row) {
+		case 1:
+			updateGameStatus("One row cleared");
+			break;
+		case 2:
+			updateGameStatus("Double Kill. Nice going");
+			break;
+		case 3:
+			updateGameStatus("Triple Kill. Ohhh mahhh Gaaah");
+			break;
+		case 4:
+			updateGameStatus("Quadra Kill. Nuibility!");
+			break;
+		default:
+			break;
+	}
+}
 function getGridVertices() {
 	var gridVertices = [];
 	var xStartingPoint = -100;
@@ -99,17 +148,9 @@ function startGame() {
 	mainLoop();
 }
 function mainLoop() {
-	if (!gameStatus) {
-		return;
-	}
+
 	render(currentGame);
-	if (!currentShape.shiftByY(1)) {//the shape can't move anymore
-		if (!currentShape.getNewShape()) {
-			//game lost. A new shape is stuck at starting point 
-			document.getElementById("gameStatus").innerHTML = "You lost";
-			gameStatus = false;
-		}
-	}
+	dropCurrentShape(currentShape);
 
 	setTimeout(() => {
 		window.requestAnimFrame(mainLoop);

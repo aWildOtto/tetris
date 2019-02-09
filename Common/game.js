@@ -29,7 +29,7 @@ function Game() {
 	this.checkCompleteRow = function () {
 		var x = 0;
 		var filledX = 0;
-		var freedRows = 0;
+		var numFreedRows = 0;
 		this.gameBlocks.forEach((block) => {
 			if (block.occupied) {
 				filledX += 1;
@@ -37,15 +37,16 @@ function Game() {
 			if (x % 10 === 9) {
 				if (filledX === 10) {
 					freeBlocks(x - 9, x);
-					freedRows++;
+					numFreedRows++;
 				}
 				filledX = 0;
 			}
 			x++;
 		});
-		if (freedRows) {
-			theGame.shiftdownEverything(freedRows);
+		if (numFreedRows) {
+			theGame.shiftdownEverything(numFreedRows);
 		}
+		return numFreedRows;
 	}
 
 	function freeBlocks(start, end) {
