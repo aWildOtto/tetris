@@ -35,6 +35,37 @@ function getKey(key) {
 }
 
 
+function getGridVertices(){
+	var gridVertices = [];
+	var xStartingPoint = -100;
+	var yStartingPoint = -200;
+	var xStepSize = 20;
+	var yStepSize = 20;
+	for(i = 0; i < 10; i ++){
+		var x = xStartingPoint + xStepSize * i;
+		gridVertices.push(vec2(x, -200));
+		gridVertices.push(vec2(x, 200));
+	}
+	for(i = 0; i < 20; i++){
+		var y = yStartingPoint + yStepSize * i;
+		gridVertices.push(vec2(-200, y));
+		gridVertices.push(vec2(200, y));
+	}
+	return gridVertices;
+}
+
+function drawGrid(){
+	gl.bufferData(gl.ARRAY_BUFFER, flatten(getGridVertices()), gl.STATIC_DRAW);
+	gl.drawArrays(gl.LINES, 0, 60);
+}
+
+function randomColor(){
+	var r = Math.random();
+	var g = Math.random();
+	var b = Math.random();
+	return vec4(r, g, b, 1.0);
+}
+
 var currentShape;
 window.onload = function init() {
 
@@ -85,11 +116,16 @@ function render(currentShape) {
 
 	// Associate out shader variables with our data buffer
 	var vPosition = gl.getAttribLocation(program, "vPosition");
+	var color = gl.getAttribLocation(program, "color");
 	gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(vPosition);
+	// gl.vertexAttribPointer(color, 2, gl.FLOAT, false, 0, 0);
+	// gl.enableVertexAttribArray(color);
 
 	// Clearing the buffer and drawing the square
 	gl.clear(gl.COLOR_BUFFER_BIT);
 	gl.drawArrays(gl.TRIANGLES, 0, allBlocks.length);
+
+	drawGrid();
 
 }
