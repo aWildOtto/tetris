@@ -27,47 +27,56 @@ function Game() {
 	}
 
 	this.checkCompleteRow = function () {
-		var x = 0;
+		var clearedRowStart = [];
 		var filledX = 0;
 		var numFreedRows = 0;
-		this.gameBlocks.forEach((block) => {
+		this.gameBlocks.forEach((block, i) => {
 			if (block.occupied) {
 				filledX += 1;
 			}
-			if (x % 10 === 9) {
+			if (i % 10 === 9) {
 				if (filledX === 10) {
-					freeBlocks(x - 9, x);
+					freeBlocks(i - 9, i);
+					clearedRowStart.push(i - 9);
 					numFreedRows++;
 				}
 				filledX = 0;
 			}
-			x++;
 		});
 		if (numFreedRows) {
-			theGame.shiftdownEverything(numFreedRows);
+			theGame.shiftdownEverything(clearedRowStart);
 		}
 		return numFreedRows;
 	}
 
 	function freeBlocks(start, end) {
+		var blocks = [];
 		for (let i = start; i <= end; i++) {
 			theGame.occupyBlock(i, false);
+			blocks.push(i);
 		}
+		return blocks;
 	}
-	this.shiftdownEverything = function (shiftRows) {
+	this.shiftdownEverything = function (clearedRowStart) {
 		var shiftedBlocks = [];
-		theGame.gameBlocks.forEach((block, index) => {
-			if (block.occupied) {
-				shiftedBlocks.push(index + shiftRows * 10);
-				theGame.occupyBlock(index, false);
-			}
-		});
-		shiftedBlocks.forEach((i) => {
-			theGame.occupyBlock(i, true);
+		clearedRowStart.forEach((rowStart) => {
+			theGame.gameBlocks.forEach((block, index) => {
+				if (block.occupied && index < rowStart) {
+					shiftedBlocks.push(index + 10);
+					theGame.occupyBlock(index, false);
+				}
+			});
+			shiftedBlocks.forEach((i) => {
+				theGame.occupyBlock(i, true);
+			});
 		});
 	}
 
 	this.occupyBlock = function (index, occupy) {
+		if (!this.gameBlocks[index]) {
+			console.log(this.gameBlocks);
+			// breakpoint;
+		}
 		this.gameBlocks[index].occupied = occupy;
 	}
 

@@ -6,7 +6,6 @@ var program
 var vBuffer;
 var dropSpeed = 1500;//ms
 var gameLevel = 1;
-var stackedBlocks = [];
 var currentShape;
 var currentGame;
 var gameStatus = "...";
@@ -38,13 +37,21 @@ function getKey(key) {
 		render(currentGame);
 	}
 }
-
+function initGameParam() {
+	dropSpeed = 1500;//ms
+	gameLevel = 1;
+	gameStatus = "...";
+	score = 0;
+	document.getElementById("gameStatus").innerHTML = gameStatus;
+	document.getElementById("score").innerHTML = score;
+	document.getElementById("level").innerHTML = gameLevel;
+}
 function dropCurrentShape(currentShape) {
 	if (!gameStatus) {
 		return;
 	}
 	if (!currentShape.shiftByY(1)) {//the shape can't move anymore
-		var clearedRowNum = currentShape.getNewShape();//either # of row cleared or false if shape stuck
+		var clearedRowNum = currentShape.getNewShape();//either # of row cleared or -1 if shape stuck
 		if (clearedRowNum == -1) {
 			//game lost. A new shape is stuck at starting point 
 			document.getElementById("gameStatus").innerHTML = "You lost";
@@ -142,9 +149,9 @@ window.onload = function init() {
 	startGame();
 };
 function startGame() {
+	initGameParam();
 	currentGame = new Game();
 	currentShape = new Shape(currentGame);// a random shape
-
 	mainLoop();
 }
 function mainLoop() {
