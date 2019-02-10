@@ -54,7 +54,7 @@ function dropCurrentShape(currentShape) {
 		return;
 	}
 	if (!currentShape.shiftByY(1)) {//the shape can't move anymore
-		var clearedRowNum = currentShape.getNewShape();//either # of row cleared or -1 if shape stuck
+		var clearedRowNum = currentShape.dropNewShape();//either # of row cleared or -1 if shape stuck
 		if (clearedRowNum == -1) {
 			//game lost. A new shape is stuck at starting point 
 			document.getElementById("gameStatus").innerHTML = "You lost";
@@ -118,12 +118,10 @@ function getGridVertices() {
 	return gridVertices;
 }
 
-
-
 function randomColor() {
-	var r = Math.random();
-	var g = Math.random();
-	var b = Math.random();
+	var r = Math.round(Math.random() * 10) / 10;
+	var g = Math.round(Math.random() * 10) / 10;
+	var b = Math.round(Math.random() * 10) / 10;
 	return vec4(r, g, b, 1.0);
 }
 
@@ -142,6 +140,8 @@ window.onload = function init() {
 
 	// Creating the color buffer
 	cBuffer = gl.createBuffer();
+
+	gridBuffer = gl.createBuffer();
 
 	//
 	//  Load shaders and initialize attribute buffers
@@ -162,39 +162,29 @@ function mainLoop() {
 	if (!gameInprogress) {
 		return;
 	}
-	updateBuffer(currentGame);
+	render(currentGame);
 	dropCurrentShape(currentShape);
 	renderInterval = setTimeout(mainLoop
 		, dropSpeed);
-}
-
-function updateBuffer(game) {
-	gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-	var allBlocks = game.getAllBlockVertices();
-	gl.bufferSubData(gl.ARRAY_BUFFER, 8 * allBlocks.length, flatten(allBlocks));
-
-	// var colors = game.getAllBlockColors();
-	// gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-	// gl.bufferSubData(gl.ARRAY_BUFFER, 16 * colors.length, flatten());
 }
 
 function render(currentGame) {
 
 	// Binding the vertex buffer
 	gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-
-	gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-
 	var allBlocks = currentGame.getAllBlockVertices();
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(allBlocks), gl.STATIC_DRAW);
-
-	// Associate out shader variables with our data buffer
 	var vPosition = gl.getAttribLocation(program, "vPosition");
-	var vColor = gl.getAttribLocation(program, "vColor");
 	gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(vPosition);
-	// gl.vertexAttribPointer(color, 2, gl.FLOAT, false, 0, 0);
-	// gl.enableVertexAttribArray(color);
+
+
+	gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+	var allColors = currentGame.getAllColor();
+	gl.bufferData(gl.ARRAY_BUFFER, flatten(allColors), gl.STATIC_DRAW);
+	var vColor = gl.getAttribLocation(program, "vColor");
+	gl.vertexAttribPointer(vColor, 2, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(vColor);
 
 	// Clearing the buffer and drawing the square
 	gl.clear(gl.COLOR_BUFFER_BIT);
@@ -205,6 +195,7 @@ function render(currentGame) {
 
 }
 function drawGrid() {
+	gl.createBuffer(gl.createBuffer)
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(getGridVertices()), gl.STATIC_DRAW);
 	gl.drawArrays(gl.LINES, 0, 60);
 }

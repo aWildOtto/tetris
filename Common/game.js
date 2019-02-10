@@ -1,7 +1,7 @@
 function Game() {
 	this.blockMap = [];
 	this.occupiedVertices = [];
-	this.colorMap = [];
+	this.colorMap = {};
 	var cordX = -100;
 	var cordY = 200;
 	var j = 0;
@@ -66,18 +66,21 @@ function Game() {
 		});
 	}
 
-	this.occupyBlock = function (index, occupy) {
-		if (occupy) {
+	this.occupyBlock = function (index, occupy, color) {
+		if (occupy && color) {
 			this.occupiedVertices.push(index);
+			this.colorMap[index] = color;
 		} else {
 			this.occupiedVertices = this.occupiedVertices.filter((i) => {
 				return i != index;
 			});
+			delete this.colorMap[index];
 		}
 	}
 
 	this.getAllBlockVertices = function () {
 		var vertices = [];
+		this.occupiedVertices = this.occupiedVertices.sort();
 		this.occupiedVertices.forEach((index) => {
 			vertices.push(this.blockMap[index][0]);
 			vertices.push(this.blockMap[index][1]);
@@ -87,6 +90,19 @@ function Game() {
 			vertices.push(this.blockMap[index][3]);
 		});
 		return vertices;
+	}
+	this.getAllColor = function () {
+		this.occupiedVertices = this.occupiedVertices.sort();
+		var colors = [];
+		this.occupiedVertices.forEach((index) => {
+			colors.push(theGame.colorMap[index]);
+			colors.push(theGame.colorMap[index]);
+			colors.push(theGame.colorMap[index]);
+			colors.push(theGame.colorMap[index]);
+			colors.push(theGame.colorMap[index]);
+			colors.push(theGame.colorMap[index]);
+		});
+		return colors;
 	}
 
 	this.getBlockVertices = function (index) {
