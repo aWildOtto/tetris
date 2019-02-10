@@ -4,6 +4,7 @@ var gl;
 
 var program
 var vBuffer;
+var cBuffer;
 var dropSpeed;//ms
 var gameLevel;
 var currentShape;
@@ -117,10 +118,7 @@ function getGridVertices() {
 	return gridVertices;
 }
 
-function drawGrid() {
-	gl.bufferData(gl.ARRAY_BUFFER, flatten(getGridVertices()), gl.STATIC_DRAW);
-	gl.drawArrays(gl.LINES, 0, 60);
-}
+
 
 function randomColor() {
 	var r = Math.random();
@@ -142,6 +140,9 @@ window.onload = function init() {
 	// Creating the vertex buffer
 	vBuffer = gl.createBuffer();
 
+	// Creating the color buffer
+	cBuffer = gl.createBuffer();
+
 	//
 	//  Load shaders and initialize attribute buffers
 	//
@@ -154,16 +155,27 @@ function startGame() {
 	initGameParam();
 	currentGame = new Game();
 	currentShape = new Shape(currentGame);// a random shape
+	render(currentGame);
 	mainLoop();
 }
 function mainLoop() {
 	if (!gameInprogress) {
 		return;
 	}
-	render(currentGame);
+	updateBuffer(currentGame);
 	dropCurrentShape(currentShape);
 	renderInterval = setTimeout(mainLoop
 		, dropSpeed);
+}
+
+function updateBuffer(game) {
+	gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
+	var allBlocks = game.getAllBlockVertices();
+	gl.bufferSubData(gl.ARRAY_BUFFER, 8 * allBlocks.length, flatten(allBlocks));
+
+	// var colors = game.getAllBlockColors();
+	// gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+	// gl.bufferSubData(gl.ARRAY_BUFFER, 16 * colors.length, flatten());
 }
 
 function render(currentGame) {
@@ -171,12 +183,14 @@ function render(currentGame) {
 	// Binding the vertex buffer
 	gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
 
+	gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+
 	var allBlocks = currentGame.getAllBlockVertices();
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(allBlocks), gl.STATIC_DRAW);
 
 	// Associate out shader variables with our data buffer
 	var vPosition = gl.getAttribLocation(program, "vPosition");
-	var color = gl.getAttribLocation(program, "color");
+	var vColor = gl.getAttribLocation(program, "vColor");
 	gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(vPosition);
 	// gl.vertexAttribPointer(color, 2, gl.FLOAT, false, 0, 0);
@@ -189,4 +203,8 @@ function render(currentGame) {
 	drawGrid();
 	console.log("------------render cycle complete------------");
 
+}
+function drawGrid() {
+	gl.bufferData(gl.ARRAY_BUFFER, flatten(getGridVertices()), gl.STATIC_DRAW);
+	gl.drawArrays(gl.LINES, 0, 60);
 }

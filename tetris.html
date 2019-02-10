@@ -3,25 +3,27 @@
 
 <p id="debug"></p>
 <script id="vertex-shader" type="x-shader/x-vertex">
-        attribute vec4 vPosition;
-        attribute vec4 color;
+    attribute vec4 vPosition;
+    attribute vec4 vColor;
 
-void
-main()
-{
-    gl_Position = vPosition * vec4(0.01, 0.005, 0, 1) + vec4(0, 0, 0, 0);
-}
-    </script>
+    varying vec4 fColor;
+    void
+    main()
+    {
+        gl_Position = vPosition * vec4(0.01, 0.005, 0, 1) + vec4(0, 0, 0, 0);
+        fColor = vColor;
+    }
+</script>
 
 <script id="fragment-shader" type="x-shader/x-fragment">
-        precision mediump float;
-
-void
-main()
-{
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
-}
-    </script>
+    precision mediump float;
+    varying vec4 fColor;
+    void
+    main()
+    {
+        gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    }
+</script>
 
 <script type="text/javascript" src="Common/webgl-utils.js"></script>
 <script type="text/javascript" src="Common/initShaders.js"></script>
@@ -29,6 +31,7 @@ main()
 <script type="text/javascript" src="Common/shapes.js"></script>
 <script type="text/javascript" src="Common/game.js"></script>
 <script type="text/javascript" src="tetris.js"></script>
+<link rel="stylesheet" href="tetris.css">
 
 <body>
     <div>Tetris</div>
