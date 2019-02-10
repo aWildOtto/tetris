@@ -70,7 +70,7 @@ function updateGameBoard(row) {
 	if (row > 0) {
 		scoreEarned = row * 100 + (row - 1) * 50
 		newScore = score + scoreEarned;
-		if (Math.floor(newScore / 500) > Math.floor(score / 500)) {
+		if (Math.floor(newScore / 1000) > Math.floor(score / 1000)) {
 			dropSpeed -= 100;
 			console.log("new level");
 			gameLevel++;
@@ -155,13 +155,10 @@ function startGame() {
 	mainLoop();
 }
 function mainLoop() {
-
 	render(currentGame);
 	dropCurrentShape(currentShape);
-
-	setTimeout(() => {
-		window.requestAnimFrame(mainLoop);
-	}, dropSpeed);
+	renderInterval = setTimeout(mainLoop
+		, dropSpeed);
 }
 
 function render(currentGame) {
