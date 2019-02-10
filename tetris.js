@@ -4,12 +4,13 @@ var gl;
 
 var program
 var vBuffer;
-var dropSpeed = 1500;//ms
-var gameLevel = 1;
+var dropSpeed;//ms
+var gameLevel;
 var currentShape;
 var currentGame;
-var gameStatus = "...";
-var score = 0;
+var gameStatus;
+var gameInprogress;
+var score;
 
 // Getting the keyboard input
 window.addEventListener("keydown", getKey, false);
@@ -38,6 +39,7 @@ function getKey(key) {
 	}
 }
 function initGameParam() {
+	gameInprogress = true;
 	dropSpeed = 1500;//ms
 	gameLevel = 1;
 	gameStatus = "...";
@@ -47,7 +49,7 @@ function initGameParam() {
 	document.getElementById("level").innerHTML = gameLevel;
 }
 function dropCurrentShape(currentShape) {
-	if (!gameStatus) {
+	if (!gameInprogress) {
 		return;
 	}
 	if (!currentShape.shiftByY(1)) {//the shape can't move anymore
@@ -55,7 +57,7 @@ function dropCurrentShape(currentShape) {
 		if (clearedRowNum == -1) {
 			//game lost. A new shape is stuck at starting point 
 			document.getElementById("gameStatus").innerHTML = "You lost";
-			gameStatus = false;
+			gameInprogress = false;
 		} else {
 			updateGameBoard(clearedRowNum);
 		}
@@ -155,6 +157,9 @@ function startGame() {
 	mainLoop();
 }
 function mainLoop() {
+	if (!gameInprogress) {
+		return;
+	}
 	render(currentGame);
 	dropCurrentShape(currentShape);
 	renderInterval = setTimeout(mainLoop
