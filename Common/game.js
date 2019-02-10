@@ -50,23 +50,20 @@ function Game() {
 	}
 
 	function freeBlocks(start, end) {
-		var blocks = [];
 		for (let i = start; i <= end; i++) {
 			theGame.occupyBlock(i, false);
-			blocks.push(i);
 		}
-		return blocks;
 	}
 	this.shiftdownEverything = function (clearedRowStart) {
-		var shiftedBlocks = [];
 		clearedRowStart.forEach((rowStart) => {
+			var shiftedBlocks = [];
 			theGame.gameBlocks.forEach((block, index) => {
 				if (block.occupied && index < rowStart) {
-					shiftedBlocks.push(index + 10);
-					theGame.occupyBlock(index, false);
+					theGame.occupyBlock(index, false);//first unOccupy all blocks above the cleared row
+					shiftedBlocks.push(index + 10);//store the shifted down indexes
 				}
 			});
-			shiftedBlocks.forEach((i) => {
+			shiftedBlocks.forEach((i) => {//then put the shifted indexes 
 				theGame.occupyBlock(i, true);
 			});
 		});
