@@ -46,30 +46,31 @@ function Game() {
 		return numFreedRows;
 	}
 
-	function freeBlocks(verToClear) {//clear from start to end, including end
+	function freeBlocks(verToClear) {//clear vertices
 		verToClear.forEach((i) => {
 			theGame.occupyBlock(i, false);
 		});
 	}
 	this.shiftdownEverything = function (clearedRowStart) {
+		var newColorMap = {};
+		var newOccupiedVertices = [];
 		clearedRowStart.forEach((rowStart) => {
 			this.occupiedVertices.forEach((i) => {
 				if (i < rowStart) {
 					var color = theGame.colorMap[i];
-					theGame.colorMap[i + 10] = color;
 					if (!color) {
 						console.log(i);
 					}
-					delete theGame.colorMap[i];
+					newColorMap[i + 10] = color;
+					newOccupiedVertices.push(i + 10);
+				} else {
+					newColorMap[i] = theGame.colorMap[i];
+					newOccupiedVertices.push(i);
 				}
-			})
-			this.occupiedVertices = this.occupiedVertices.map((i) => {
-				if (i < rowStart) {
-					return i + 10;
-				}
-				return i;
 			});
 		});
+		this.occupiedVertices = newOccupiedVertices;
+		this.colorMap = newColorMap;
 	}
 	//check if the block is occupied
 	this.checkOccupy = function (index) {
