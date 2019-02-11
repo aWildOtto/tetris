@@ -67,12 +67,15 @@ function Game() {
 	}
 
 	this.occupyBlock = function (index, occupy, color) {
+		// if (!this.occupiedVertices[index]) {
+		// 	console.log(index);
+		// }
 		if (occupy && color) {
 			this.occupiedVertices.push(index);
 			this.colorMap[index] = color;
 		} else {
 			this.occupiedVertices = this.occupiedVertices.filter((i) => {
-				return i != index;
+				return i != index;// delete the block index from the game
 			});
 			delete this.colorMap[index];
 		}

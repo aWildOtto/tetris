@@ -35,7 +35,7 @@ function getKey(key) {
 	}
 	if (key.key == "ArrowDown") {
 		console.log("speedUp");
-		dropCurrentShape(currentShape);
+		dropCurrentShape(currentShape, currentGame);
 		render(currentGame);
 	}
 }
@@ -49,17 +49,19 @@ function initGameParam() {
 	document.getElementById("score").innerHTML = score;
 	document.getElementById("level").innerHTML = gameLevel;
 }
-function dropCurrentShape(currentShape) {
+function dropCurrentShape() {
 	if (!gameInprogress) {
 		return;
 	}
 	if (!currentShape.shiftByY(1)) {//the shape can't move anymore
-		var clearedRowNum = currentShape.dropNewShape();//either # of row cleared or -1 if shape stuck
-		if (clearedRowNum == -1) {
+		// delete currentShape;
+		currentShape = new Shape(currentGame);
+		if (!currentShape) {
 			//game lost. A new shape is stuck at starting point 
 			document.getElementById("gameStatus").innerHTML = "You lost";
 			gameInprogress = false;
 		} else {
+			var clearedRowNum = currentGame.checkCompleteRow();//either # of row cleared or -1 if shape stuck
 			updateGameBoard(clearedRowNum);
 		}
 	}
@@ -163,7 +165,7 @@ function mainLoop() {
 		return;
 	}
 	render(currentGame);
-	dropCurrentShape(currentShape);
+	dropCurrentShape(currentShape, currentGame);
 	renderInterval = setTimeout(mainLoop
 		, dropSpeed);
 }
@@ -179,12 +181,12 @@ function render(currentGame) {
 	gl.enableVertexAttribArray(vPosition);
 
 
-	gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-	var allColors = currentGame.getAllColor();
-	gl.bufferData(gl.ARRAY_BUFFER, flatten(allColors), gl.STATIC_DRAW);
-	var vColor = gl.getAttribLocation(program, "vColor");
-	gl.vertexAttribPointer(vColor, 2, gl.FLOAT, false, 0, 0);
-	gl.enableVertexAttribArray(vColor);
+	// gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+	// var allColors = currentGame.getAllColor();
+	// gl.bufferData(gl.ARRAY_BUFFER, flatten(allColors), gl.STATIC_DRAW);
+	// var vColor = gl.getAttribLocation(program, "vColor");
+	// gl.vertexAttribPointer(vColor, 2, gl.FLOAT, false, 0, 0);
+	// gl.enableVertexAttribArray(vColor);
 
 	// Clearing the buffer and drawing the square
 	gl.clear(gl.COLOR_BUFFER_BIT);
@@ -195,7 +197,9 @@ function render(currentGame) {
 
 }
 function drawGrid() {
-	gl.createBuffer(gl.createBuffer)
+	// var vColor = gl.getAttribLocation(program, "vColor");
+	// // gl.disableVertexAtttibArray(vColor);
+	// gl.vertexAttrib4f(vColor, 0, 0, 1, 1);
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(getGridVertices()), gl.STATIC_DRAW);
 	gl.drawArrays(gl.LINES, 0, 60);
 }

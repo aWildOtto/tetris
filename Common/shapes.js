@@ -1,13 +1,59 @@
 function Shape(game) {
 	// shape munipulation methods
 	this.rotate = function () {
-
+		var isValid = true;
+		var newShape = [];
+		var pivotPointIndex = this.shape[0];
+		var sumIndex = 0;
+		var ppx = pivotPointIndex % 10;
+		var ppy = Math.floor(pivotPointIndex / 10);
+		newShape.push(pivotPointIndex);
+		occupyShape(this.shape, false);
+		for (var i = 1; i < 4; i++) {
+			var index = this.shape[i];
+			var x = index % 10;
+			var y = Math.floor(index / 10);
+			var differenceX = x - ppx;
+			var differenceY = y - ppy;
+			sumIndex += (index - pivotPointIndex);
+			// test point is on the left-hand side of the pivot point
+			if (differenceX < 0) {
+				if ((ppy + Math.abs(differenceX)) > 19) { isvalid = false; }
+				if (differenceY > 0) {
+					if ((ppx + differenceY) > 9) { isValid = false; }
+				} else {
+					if ((ppx + differenceY) < 0) { isvalid = false; }
+				}
+				newShape.push(Math.abs(differenceX) * 10 + pivotPointIndex + differenceY);
+			} else if (differenceX > 0) {
+				if ((ppy - differenceX) < 0) { isValid = false; }
+				if (differenceY > 0) {
+					if ((ppx + differenceY) > 9) { isValid = false; }
+				} else {
+					if ((ppx + differenceY) < 0) { isValid = false; }
+				}
+				newShape.push(pivotPointIndex - Math.abs(differenceX) * 10 + differenceY);
+			} else if (differenceX == 0) {
+				if (differenceY > 0) {
+					if ((ppx + differenceY) > 9) { isValid = false; }
+				} else if (differenceY < 0) {
+					if ((ppx + differenceY) < 0) { isValid = false; }
+				}
+				newShape.push(pivotPointIndex + differenceY);
+			}
+		}
+		console.log(isValid);
+		console.log(sumIndex == 22);
+		if (isValid && sumIndex != 22) {//shape O can't 
+			this.shape = newShape;
+			occupyShape(newShape, true, this.color);
+		}
 	}
 	this.shiftByX = function (s) {
 		var newShape = [];
 		for (let index of this.shape) {
 			if (Math.floor((index + s) / 10) !== Math.floor(index / 10)) {
-				return;
+				return;//boundary check
 			}
 		}
 		occupyShape(this.shape, false);
@@ -50,21 +96,13 @@ function Shape(game) {
 		this.shape = newShape;
 		return true;
 	}
-	this.dropNewShape = function () {
-		var clearedRowNum = game.checkCompleteRow();
-		this.shape = genRandomShape();
-		if (!this.shape) {
-			return -1;
-		}
-		return clearedRowNum;
-	}
 	function occupyShape(shape, o, color) {
 		shape.forEach((v) => {
 			game.occupyBlock(v, o, color);
 		})
 	}
-	function genRandomShape() {
-		var randomNum = getRandomInt(0, 1);
+	function genRandomShape(shapeColor) {
+		var randomNum = getRandomInt(0, 6);
 		var randomStartingShift;
 		var shape;
 		switch (randomNum) {
@@ -73,33 +111,32 @@ function Shape(game) {
 				randomStartingShift = getRandomInt(0, 8);
 				break;
 			case 1://I
-				shape = [0, 10, 20, 30];
-				randomStartingShift = getRandomInt(0, 9);
+				shape = [2, 0, 1, 3];
+				randomStartingShift = getRandomInt(0, 6);
 				break;
 			case 2://L
-				shape = [0, 10, 20, 21];
-				randomStartingShift = getRandomInt(0, 8);
+				shape = [1, 0, 2, 10];
+				randomStartingShift = getRandomInt(0, 7);
 				break;
 			case 3://J
-				shape = [1, 11, 21, 20];
-				randomStartingShift = getRandomInt(0, 8);
+				shape = [1, 0, 2, 12];
+				randomStartingShift = getRandomInt(0, 7);
 				break;
 			case 4://S
 				shape = [1, 2, 10, 11];
 				randomStartingShift = getRandomInt(0, 7);
 				break;
 			case 5://Z
-				shape = [0, 1, 11, 12];
+				shape = [1, 0, 11, 12];
 				randomStartingShift = getRandomInt(0, 7);
 				break;
 			case 6://T
-				shape = [0, 1, 2, 11];
+				shape = [1, 0, 2, 11];
 				randomStartingShift = getRandomInt(0, 7);
 				break;
 			default:
 				break;
 		}
-		this.color = randomColor();
 		shape = shape.map((i) => {
 			return i + randomStartingShift;
 		});
@@ -108,12 +145,11 @@ function Shape(game) {
 				return false;
 			}
 		}
-		occupyShape(shape, true, this.color);
+		occupyShape(shape, true, shapeColor);
 		return shape;
 	}
-	this.color;
-	this.shape = genRandomShape();
-
+	this.color = randomColor();
+	this.shape = genRandomShape(this.color);
 }
 
 function getRandomInt(min, max) {
