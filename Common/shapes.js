@@ -168,7 +168,7 @@ function Shape(game) {
 			shape = rotateShape(shape);
 		}
 		for (let i = 0; i < shape.length; i++) {
-			if (game.checkOccupy(i)) {
+			if (game.checkOccupy(shape[i])) {
 				return null;
 			}
 		}
