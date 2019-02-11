@@ -21,7 +21,7 @@ function Shape(game) {
 			sumIndex += (index - pivotPointIndex);
 			// test point is on the left-hand side of the pivot point
 			if (differenceX < 0) {
-				if ((ppy + Math.abs(differenceX)) > 19) { isvalid = false; }
+				if ((ppy + Math.abs(differenceX)) > 21) { isvalid = false; }
 				if (differenceY > 0) {
 					if ((ppx + differenceY) > 9) { isValid = false; }
 				} else {
@@ -47,11 +47,20 @@ function Shape(game) {
 		}
 		console.log(isValid);
 		console.log(sumIndex == 22);
+		for (let index of newShape) {
+			if (game.checkOccupy(index)) {
+				occupyShape(this.shape, true, this.color);
+				return;
+			}
+		}
 		if (isValid && sumIndex != 22) {//shape O can't 
 			this.shape = newShape;
 			occupyShape(newShape, true, this.color);
+		} else {
+			occupyShape(this.shape, true, this.color);
 		}
 	}
+	// move shape left or right
 	this.shiftByX = function (s) {
 		var newShape = [];
 		for (let index of this.shape) {
@@ -72,15 +81,16 @@ function Shape(game) {
 		}
 		this.shape = newShape;
 	}
-
+	// move shape down
 	this.shiftByY = function (s) {
 		if (!this.shape) {
 			return false;
 		}
 		var newShape = [];
 		for (let index of this.shape) {
-			if (index + (10 * s) > 199) {
+			if (index + (10 * s) > 219) {
 				console.log("touch down", index + 10 * s);
+				this.shape = null;
 				return false;
 			}
 		}
@@ -89,6 +99,7 @@ function Shape(game) {
 			if (game.checkOccupy(index + 10 * s)) {
 				console.log("overlap", index + 10 * s);
 				occupyShape(this.shape, true, this.color);
+				this.shape = null;
 				return false;
 			}
 		}
@@ -99,13 +110,13 @@ function Shape(game) {
 		this.shape = newShape;
 		return true;
 	}
-	function occupyShape(shape, o, color) {
+	function occupyShape(shape, occupyFlag, color) {
 		shape.forEach((v) => {
-			game.occupyBlock(v, o, color);
+			game.occupyBlock(v, occupyFlag, color);
 		})
 	}
 	function genRandomShape(shapeColor) {
-		var randomNum = getRandomInt(0, 1);
+		var randomNum = getRandomInt(0, 6);
 		var randomStartingShift;
 		var shape;
 		switch (randomNum) {
@@ -141,11 +152,11 @@ function Shape(game) {
 				break;
 		}
 		shape = shape.map((i) => {
-			return i + randomStartingShift;
+			return i + 10 + randomStartingShift;
 		});
 		for (let i = 0; i < shape.length; i++) {
 			if (game.checkOccupy(i)) {
-				return false;
+				return null;
 			}
 		}
 		occupyShape(shape, true, shapeColor);
@@ -153,6 +164,10 @@ function Shape(game) {
 	}
 	this.color = randomColor();
 	this.shape = genRandomShape(this.color);
+	var randomRotate = getRandomInt(0, 3);
+	for (let i = 0; i < randomRotate; i++) {
+		this.rotate();
+	}
 }
 
 function getRandomInt(min, max) {

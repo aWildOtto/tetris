@@ -16,34 +16,43 @@ var score;
 // Getting the keyboard input
 window.addEventListener("keydown", getKey, false);
 var pressed = 0;
-function getKey(key) {
+function getKey(event) {
 
-	if (key.key == "ArrowUp") {
+	if (event.key == "ArrowUp") {
 		console.log("rotate");
 		currentShape.rotate();
 		render(currentGame);
 	}
-	if (key.key == "ArrowLeft") {
+	if (event.key == "ArrowLeft") {
 		console.log("left");
 		currentShape.shiftByX(-1);
 		render(currentGame);
 	}
-	if (key.key == "ArrowRight") {
+	if (event.key == "ArrowRight") {
 		console.log("right");
 		currentShape.shiftByX(1);
 		render(currentGame);
 	}
-	if (key.key == "ArrowDown") {
+	if (event.key == "ArrowDown") {
 		console.log("speedUp");
 		dropCurrentShape(currentShape, currentGame);
+		if (!currentShape.shape) {
+			currentShape = new Shape(currentGame);
+		}
 		render(currentGame);
+	}
+	if (event.code == "KeyQ") {
+		gameOver();
+	}
+	if (event.code == "KeyR") {
+		startGame();
 	}
 }
 function initGameParam() {
 	gameInprogress = true;
 	dropSpeed = 1500;//ms
 	gameLevel = 1;
-	gameStatus = "...";
+	gameStatus = "Game In Progress";
 	score = 0;
 	document.getElementById("gameStatus").innerHTML = gameStatus;
 	document.getElementById("score").innerHTML = score;
@@ -165,12 +174,18 @@ function mainLoop() {
 	dropCurrentShape(currentShape, currentGame);
 	if (!currentShape.shape) {
 		currentShape = new Shape(currentGame);
+		if (!currentShape.shape) {
+			gameOver();
+		}
 	}
 	render(currentGame);
 	renderInterval = setTimeout(mainLoop
 		, dropSpeed);
 }
-
+function gameOver() {
+	gameInprogress = false;
+	updateGameStatus("Game Over");
+}
 function render(currentGame) {
 
 	// Binding the vertex buffer
