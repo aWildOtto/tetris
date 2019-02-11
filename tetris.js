@@ -54,16 +54,9 @@ function dropCurrentShape() {
 		return;
 	}
 	if (!currentShape.shiftByY(1)) {//the shape can't move anymore
-		// delete currentShape;
-		currentShape = new Shape(currentGame);
-		if (!currentShape) {
-			//game lost. A new shape is stuck at starting point 
-			document.getElementById("gameStatus").innerHTML = "You lost";
-			gameInprogress = false;
-		} else {
-			var clearedRowNum = currentGame.checkCompleteRow();//either # of row cleared or -1 if shape stuck
-			updateGameBoard(clearedRowNum);
-		}
+		var clearedRowNum = currentGame.checkCompleteRow();//either # of row cleared or -1 if shape stuck
+		updateGameBoard(clearedRowNum);
+		currentShape.die();
 	}
 }
 function updateGameStatus(string) {
@@ -157,15 +150,23 @@ function startGame() {
 	initGameParam();
 	currentGame = new Game();
 	currentShape = new Shape(currentGame);// a random shape
+
 	render(currentGame);
-	mainLoop();
+	setTimeout(() => {
+		mainLoop();
+	}, dropSpeed);
+
 }
 function mainLoop() {
 	if (!gameInprogress) {
 		return;
 	}
-	render(currentGame);
+
 	dropCurrentShape(currentShape, currentGame);
+	if (!currentShape.shape) {
+		currentShape = new Shape(currentGame);
+	}
+	render(currentGame);
 	renderInterval = setTimeout(mainLoop
 		, dropSpeed);
 }

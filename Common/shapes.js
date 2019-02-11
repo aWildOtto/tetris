@@ -1,5 +1,8 @@
 function Shape(game) {
 	// shape munipulation methods
+	this.die = function () {
+		this.shape = null;
+	}
 	this.rotate = function () {
 		var isValid = true;
 		var newShape = [];
@@ -102,7 +105,7 @@ function Shape(game) {
 		})
 	}
 	function genRandomShape(shapeColor) {
-		var randomNum = getRandomInt(0, 6);
+		var randomNum = getRandomInt(0, 1);
 		var randomStartingShift;
 		var shape;
 		switch (randomNum) {
