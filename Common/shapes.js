@@ -125,37 +125,37 @@ function Shape(game) {
 			case 0://O
 				shape = [0, 1, 10, 11];
 				randomStartingShift = getRandomInt(0, 8);
-				theShape.color = [0.3, 0.2, 0.6, 1];
+				theShape.color = [1, 0.75, 0.027, 1];
 				break;
 			case 1://I
 				shape = [2, 0, 1, 3];
 				randomStartingShift = getRandomInt(0, 5);
-				theShape.color = [0, 0.6, 0.2, 1];
+				theShape.color = [0.0824, 0.3961, 0.7529, 1];
 				break;
 			case 2://L
 				shape = [1, 0, 2, 10];
 				randomStartingShift = getRandomInt(0, 7);
-				theShape.color = [0, 0.8, 0.1, 1];
+				theShape.color = [0.84, 0.10, 0.37, 1];
 				break;
 			case 3://J
 				shape = [1, 0, 2, 12];
 				randomStartingShift = getRandomInt(0, 7);
-				theShape.color = [0, 0.5, 0.6, 1];
+				theShape.color = [0.298, 0.686, 0.314, 1];
 				break;
 			case 4://S
 				shape = [1, 2, 10, 11];
 				randomStartingShift = getRandomInt(0, 7);
-				theShape.color = [0.3, 0.5, 0, 1];
+				theShape.color = [0.557, 0.141, 0.667, 1];
 				break;
 			case 5://Z
 				shape = [1, 0, 11, 12];
 				randomStartingShift = getRandomInt(0, 7);
-				theShape.color = [0.1, 0.5, 0.9, 1];
+				theShape.color = [0.682, 0.835, 0.506, 1];
 				break;
 			case 6://T
 				shape = [1, 0, 2, 11];
 				randomStartingShift = getRandomInt(0, 7);
-				theShape.color = [0.9, 0.1, 0.7, 1];
+				theShape.color = [0.545, 0.42, 0.38, 1];
 				break;
 			default:
 				break;
