@@ -52,9 +52,9 @@ function Game() {
 		});
 	}
 	this.shiftdownEverything = function (clearedRowStart) {
-		var newColorMap = {};
-		var newOccupiedVertices = [];
 		clearedRowStart.forEach((rowStart) => {
+			var newColorMap = {};
+			var newOccupiedVertices = [];
 			this.occupiedVertices.forEach((i) => {
 				if (i < rowStart) {
 					var color = theGame.colorMap[i];
@@ -68,9 +68,9 @@ function Game() {
 					newOccupiedVertices.push(i);
 				}
 			});
+			theGame.occupiedVertices = newOccupiedVertices;
+			theGame.colorMap = newColorMap;
 		});
-		this.occupiedVertices = newOccupiedVertices;
-		this.colorMap = newColorMap;
 	}
 	//check if the block is occupied
 	this.checkOccupy = function (index) {
@@ -133,4 +133,12 @@ function Game() {
 		vertices.push(this.blockMap[index][3]);
 		return vertices;
 	}
+
+	this.colorMapSize = function () {
+		var size = 0, key;
+		for (key in theGame.colorMap) {
+			if (theGame.colorMap.hasOwnProperty(key)) size++;
+		}
+		return size;
+	};
 }
