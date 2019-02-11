@@ -3,14 +3,14 @@
 
 <p id="debug"></p>
 <script id="vertex-shader" type="x-shader/x-vertex">
-    attribute vec4 vPosition;
+    attribute vec2 vPosition;
     attribute vec4 vColor;
 
     varying vec4 fColor;
     void
     main()
     {
-        gl_Position = vPosition * vec4(0.01, 0.005, 0, 1) + vec4(0, 0, 0, 0);
+        gl_Position = vec4(vPosition, 0, 1) * vec4(0.01, 0.005, 0, 1) + vec4(0, 0, 0, 0);
         fColor = vColor;
     }
 </script>
@@ -21,7 +21,7 @@
     void
     main()
     {
-        gl_FragColor = vec4(0.5, 0.6, 0.6, 1);
+        gl_FragColor = fColor;
     }
 </script>
 

@@ -1,5 +1,6 @@
 function Shape(game) {
 	// shape munipulation methods
+	var theShape = this;
 	this.die = function () {
 		this.shape = null;
 	}
@@ -44,7 +45,7 @@ function Shape(game) {
 				newShape.push(pivotPointIndex + differenceY);
 			}
 		}
-		if (isValid && sumIndex === 22) {//shape O doesn't rotate
+		if (!isValid || sumIndex === 22) {//shape O doesn't rotate
 			newShape = shape;
 		}
 		for (let index of newShape) {
@@ -124,30 +125,37 @@ function Shape(game) {
 			case 0://O
 				shape = [0, 1, 10, 11];
 				randomStartingShift = getRandomInt(0, 8);
+				theShape.color = [0.3, 0.2, 0.6, 1];
 				break;
 			case 1://I
 				shape = [2, 0, 1, 3];
 				randomStartingShift = getRandomInt(0, 5);
+				theShape.color = [0, 0.6, 0.2, 1];
 				break;
 			case 2://L
 				shape = [1, 0, 2, 10];
 				randomStartingShift = getRandomInt(0, 7);
+				theShape.color = [0, 0.8, 0.1, 1];
 				break;
 			case 3://J
 				shape = [1, 0, 2, 12];
 				randomStartingShift = getRandomInt(0, 7);
+				theShape.color = [0, 0.5, 0.6, 1];
 				break;
 			case 4://S
 				shape = [1, 2, 10, 11];
 				randomStartingShift = getRandomInt(0, 7);
+				theShape.color = [0.3, 0.5, 0, 1];
 				break;
 			case 5://Z
 				shape = [1, 0, 11, 12];
 				randomStartingShift = getRandomInt(0, 7);
+				theShape.color = [0.1, 0.5, 0.9, 1];
 				break;
 			case 6://T
 				shape = [1, 0, 2, 11];
 				randomStartingShift = getRandomInt(0, 7);
+				theShape.color = [0.9, 0.1, 0.7, 1];
 				break;
 			default:
 				break;
@@ -167,7 +175,6 @@ function Shape(game) {
 		occupyShape(shape, true, shapeColor);
 		return shape;
 	}
-	this.color = randomColor();
 	this.shape = genRandomShape(this.color);
 }
 

@@ -220,14 +220,14 @@ function render(currentGame) {
 	gl.enableVertexAttribArray(vPosition);
 
 
-	// gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
-	// var allColors = currentGame.getAllColor();
-	// gl.bufferData(gl.ARRAY_BUFFER, flatten(allColors), gl.STATIC_DRAW);
-	// var vColor = gl.getAttribLocation(program, "vColor");
-	// gl.vertexAttribPointer(vColor, 2, gl.FLOAT, false, 0, 0);
-	// gl.enableVertexAttribArray(vColor);
+	gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
+	var allColors = currentGame.getAllColor();
+	gl.bufferData(gl.ARRAY_BUFFER, flatten(allColors), gl.STATIC_DRAW);
+	var vColor = gl.getAttribLocation(program, "vColor");
+	gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(vColor);
 
-	// Clearing the buffer and drawing the square
+	// Clearing the buffer and drawing the game
 	gl.clear(gl.COLOR_BUFFER_BIT);
 	gl.drawArrays(gl.TRIANGLES, 0, allBlocks.length);
 
@@ -236,9 +236,11 @@ function render(currentGame) {
 
 }
 function drawGrid() {
-	// var vColor = gl.getAttribLocation(program, "vColor");
-	// // gl.disableVertexAtttibArray(vColor);
-	// gl.vertexAttrib4f(vColor, 0, 0, 1, 1);
+	var vColor = gl.getAttribLocation(program, "vColor");
+	// gl.bindBuffer(gl.ARRAY_BUFFER, gridBuffer);
+	// gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
+	gl.vertexAttrib4f(vColor, 0.5, 0.5, 0.5, 1);
+
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(getGridVertices()), gl.STATIC_DRAW);
 	gl.drawArrays(gl.LINES, 0, 60);
 }
