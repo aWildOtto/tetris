@@ -53,6 +53,16 @@ function Game() {
 	}
 	this.shiftdownEverything = function (clearedRowStart) {
 		clearedRowStart.forEach((rowStart) => {
+			this.occupiedVertices.forEach((i) => {
+				if (i < rowStart) {
+					var color = theGame.colorMap[i];
+					theGame.colorMap[i + 10] = color;
+					if (!color) {
+						console.log(i);
+					}
+					delete theGame.colorMap[i];
+				}
+			})
 			this.occupiedVertices = this.occupiedVertices.map((i) => {
 				if (i < rowStart) {
 					return i + 10;
@@ -67,9 +77,9 @@ function Game() {
 	}
 	//occupy the block
 	this.occupyBlock = function (index, occupy, color) {
-		// if (!this.occupiedVertices[index]) {
-		// 	console.log(index);
-		// }
+		if (occupy && !color) {
+			console.log(index);
+		}
 		if (occupy && color) {
 			this.occupiedVertices.push(index);
 			this.colorMap[index] = color;
@@ -100,12 +110,14 @@ function Game() {
 		this.occupiedVertices = this.occupiedVertices.sort();
 		var colors = [];
 		this.occupiedVertices.forEach((index) => {
-			colors.push(theGame.colorMap[index]);
-			colors.push(theGame.colorMap[index]);
-			colors.push(theGame.colorMap[index]);
-			colors.push(theGame.colorMap[index]);
-			colors.push(theGame.colorMap[index]);
-			colors.push(theGame.colorMap[index]);
+			if (index >= 20) {
+				colors.push(theGame.colorMap[index]);
+				colors.push(theGame.colorMap[index]);
+				colors.push(theGame.colorMap[index]);
+				colors.push(theGame.colorMap[index]);
+				colors.push(theGame.colorMap[index]);
+				colors.push(theGame.colorMap[index]);
+			}
 		});
 		return colors;
 	}

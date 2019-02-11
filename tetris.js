@@ -5,7 +5,7 @@ var gl;
 var program
 var vBuffer;
 var cBuffer;
-var dropSpeed;//ms
+var dropRate;//ms
 var gameLevel;
 var currentShape;
 var currentGame;
@@ -50,7 +50,7 @@ function getKey(event) {
 }
 function initGameParam() {
 	gameInprogress = true;
-	dropSpeed = 1500;//ms
+	dropRate = 1500;//ms
 	gameLevel = 1;
 	gameStatus = "Game In Progress";
 	score = 0;
@@ -78,7 +78,9 @@ function updateGameBoard(row) {
 		scoreEarned = row * 100 + (row - 1) * 50
 		newScore = score + scoreEarned;
 		if (Math.floor(newScore / 1000) > Math.floor(score / 1000)) {
-			dropSpeed -= 100;
+			if (dropRate > 100) {// In Total 14 levels 
+				dropRate -= 100;
+			}
 			console.log("new level");
 			gameLevel++;
 			document.getElementById("level").innerHTML = gameLevel;
@@ -163,7 +165,7 @@ function startGame() {
 	render(currentGame);
 	setTimeout(() => {
 		mainLoop();
-	}, dropSpeed);
+	}, dropRate);
 
 }
 function mainLoop() {
@@ -180,7 +182,7 @@ function mainLoop() {
 	}
 	render(currentGame);
 	renderInterval = setTimeout(mainLoop
-		, dropSpeed);
+		, dropRate);
 }
 function gameOver() {
 	gameInprogress = false;
