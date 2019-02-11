@@ -17,7 +17,22 @@ var score;
 window.addEventListener("keydown", getKey, false);
 var pressed = 0;
 function getKey(event) {
-
+	if (event.code == "KeyQ") {
+		gameOver();
+	}
+	if (event.code == "KeyR") {
+		startGame();
+	}
+	if (event.code == "KeyP") {
+		if (gameInprogress) {
+			gamePause();
+		} else {
+			gameResume();
+		}
+	}
+	if (!gameInprogress) {
+		return;
+	}
 	if (event.key == "ArrowUp") {
 		console.log("rotate");
 		currentShape.rotate();
@@ -40,12 +55,6 @@ function getKey(event) {
 			currentShape = new Shape(currentGame);
 		}
 		render(currentGame);
-	}
-	if (event.code == "KeyQ") {
-		gameOver();
-	}
-	if (event.code == "KeyR") {
-		startGame();
 	}
 }
 function initGameParam() {
@@ -185,8 +194,20 @@ function mainLoop() {
 		, dropRate);
 }
 function gameOver() {
+	currentGame.occupiedVertices = [];
+	currentShape.shape = null;
+	render(currentGame);
 	gameInprogress = false;
 	updateGameStatus("Game Over");
+}
+function gamePause() {
+	gameInprogress = false;
+	updateGameStatus("Game paused");
+}
+function gameResume() {
+	gameInprogress = true;
+	updateGameStatus("Game In Progress");
+	mainLoop();
 }
 function render(currentGame) {
 
