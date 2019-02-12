@@ -13,8 +13,51 @@ var gameStatus;
 var gameInprogress;
 var score;
 
+function virtualBtn(event) {
+	console.log(event);
+	switch (event.target.id) {
+		case "leftBtn":
+			console.log("left");
+			currentShape.shiftByX(-1);
+			render(currentGame);
+			break;
+		case "rightBtn":
+			console.log("right");
+			currentShape.shiftByX(1);
+			render(currentGame);
+			break;
+		case "downBtn":
+			console.log("speedUp");
+			dropCurrentShape(currentShape, currentGame);
+			if (!currentShape.shape) {
+				currentShape = new Shape(currentGame);
+			}
+			render(currentGame);
+			break;
+		case "spaceBtn":
+			console.log("Drop to bottom");
+			do {
+				dropCurrentShape(currentShape, currentGame);
+			} while (dropCurrentShape(currentShape, currentGame));
+
+			if (!currentShape.shape) {
+				currentShape = new Shape(currentGame);
+			}
+			render(currentGame);
+			break;
+		case "upBtn":
+			console.log("rotate");
+			currentShape.rotate();
+			render(currentGame);
+			break;
+
+		default:
+			break;
+	}
+}
 // Getting the keyboard input
 window.addEventListener("keydown", getKey, false);
+var pauseBtn = document.getElementById("pauseBtn");
 var pressed = 0;
 function getKey(event) {
 	if (event.code == "KeyQ") {
@@ -24,33 +67,40 @@ function getKey(event) {
 		startGame();
 	}
 	if (event.code == "KeyP") {
-		if (gameInprogress) {
-			gamePause();
-		} else {
-			gameResume();
-		}
+		pausOrResumeeGame();
 	}
 	if (!gameInprogress) {
 		return;
 	}
-	if (event.key == "ArrowUp") {
+	if (event.code == "ArrowUp") {
 		console.log("rotate");
 		currentShape.rotate();
 		render(currentGame);
 	}
-	if (event.key == "ArrowLeft") {
+	if (event.code == "ArrowLeft") {
 		console.log("left");
 		currentShape.shiftByX(-1);
 		render(currentGame);
 	}
-	if (event.key == "ArrowRight") {
+	if (event.code == "ArrowRight") {
 		console.log("right");
 		currentShape.shiftByX(1);
 		render(currentGame);
 	}
-	if (event.key == "ArrowDown") {
+	if (event.code == "ArrowDown") {
 		console.log("speedUp");
 		dropCurrentShape(currentShape, currentGame);
+		if (!currentShape.shape) {
+			currentShape = new Shape(currentGame);
+		}
+		render(currentGame);
+	}
+	if (event.code == "Space") {
+		console.log("Drop to bottom");
+		do {
+			dropCurrentShape(currentShape, currentGame);
+		} while (dropCurrentShape(currentShape, currentGame));
+
 		if (!currentShape.shape) {
 			currentShape = new Shape(currentGame);
 		}
@@ -69,13 +119,15 @@ function initGameParam() {
 }
 function dropCurrentShape() {
 	if (!gameInprogress) {
-		return;
+		return false;
 	}
 	if (!currentShape.shiftByY(1)) {//the shape can't move anymore
 		var clearedRowNum = currentGame.checkCompleteRow();//either # of row cleared or -1 if shape stuck
 		updateGameBoard(clearedRowNum);
 		currentShape.die();
+		return false;
 	}
+	return true;
 }
 function updateGameStatus(string) {
 	document.getElementById("gameStatus").innerHTML = string;
@@ -169,6 +221,7 @@ window.onload = function init() {
 
 function startGame() {
 	initGameParam();
+	pauseBtn.disabled = false;
 	currentGame = new Game();
 	currentShape = new Shape(currentGame);// a random shape
 
@@ -182,7 +235,7 @@ function mainLoop() {
 	if (!gameInprogress) {
 		return;
 	}
-
+	pauseBtn.disabled = false;
 	dropCurrentShape(currentShape, currentGame);
 	if (!currentShape.shape) {
 		currentShape = new Shape(currentGame);
@@ -200,6 +253,19 @@ function gameOver() {
 	render(currentGame);
 	gameInprogress = false;
 	updateGameStatus("Game Over");
+	pauseBtn.disabled = true;
+}
+function pausOrResumeeGame() {
+	if (gameInprogress) {
+		gameInprogress = false;
+		updateGameStatus("Game paused");
+		pauseBtn.innerHTML = "Resume";
+	} else {
+		gameInprogress = true;
+		updateGameStatus("Game In Progress");
+		pauseBtn.innerHTML = "Pause";
+		mainLoop();
+	}
 }
 function gamePause() {
 	gameInprogress = false;
