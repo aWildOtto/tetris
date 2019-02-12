@@ -160,7 +160,7 @@ function Shape(game) {
 				break;
 		}
 		shape = shape.map((i) => {
-			return i + 20 + randomStartingShift;
+			return i + 10 + randomStartingShift;
 		});
 		var randomRotate = getRandomInt(0, 3);
 		for (let i = 0; i < randomRotate; i++) {
