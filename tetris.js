@@ -17,12 +17,18 @@ var score;
 window.addEventListener("keydown", getKey, false);
 var pauseBtn = document.getElementById("pauseBtn");
 var pressed = 0;
+function restartGame() {
+	gameOver();
+	setTimeout(() => {
+		startGame();
+	}, dropRate / 2);
+}
 function getKey(event) {
 	if (event.code == "KeyQ") {
 		gameOver();
 	}
 	if (event.code == "KeyR") {
-		startGame();
+		restartGame();
 	}
 	if (event.code == "KeyP") {
 		pausOrResumeeGame();
