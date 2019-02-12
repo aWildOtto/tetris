@@ -166,6 +166,7 @@ window.onload = function init() {
 
 	startGame();
 };
+
 function startGame() {
 	initGameParam();
 	currentGame = new Game();
@@ -175,8 +176,8 @@ function startGame() {
 	setTimeout(() => {
 		mainLoop();
 	}, dropRate);
-
 }
+
 function mainLoop() {
 	if (!gameInprogress) {
 		return;
@@ -212,13 +213,6 @@ function gameResume() {
 function render(currentGame) {
 
 	// Binding the vertex buffer
-	gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
-	var allBlocks = currentGame.getAllBlockVertices();
-	gl.bufferData(gl.ARRAY_BUFFER, flatten(allBlocks), gl.STATIC_DRAW);
-	var vPosition = gl.getAttribLocation(program, "vPosition");
-	gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
-	gl.enableVertexAttribArray(vPosition);
-
 
 	gl.bindBuffer(gl.ARRAY_BUFFER, cBuffer);
 	var allColors = currentGame.getAllColor();
@@ -227,20 +221,27 @@ function render(currentGame) {
 	gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(vColor);
 
+	gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
+	var allBlocks = currentGame.getAllBlockVertices();
+	gl.bufferData(gl.ARRAY_BUFFER, flatten(allBlocks), gl.STATIC_DRAW);
+	var vPosition = gl.getAttribLocation(program, "vPosition");
+	gl.vertexAttribPointer(vPosition, 2, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(vPosition);
+
 	// Clearing the buffer and drawing the game
 	gl.clear(gl.COLOR_BUFFER_BIT);
 	gl.drawArrays(gl.TRIANGLES, 0, allBlocks.length);
-
+	// gl.drawArrays(gl.LINES, 0, 60);
 	drawGrid();
 	console.log("------------render cycle complete------------");
 
 }
 function drawGrid() {
 	var vColor = gl.getAttribLocation(program, "vColor");
-	// gl.bindBuffer(gl.ARRAY_BUFFER, gridBuffer);
-	// gl.vertexAttribPointer(vColor, 4, gl.FLOAT, false, 0, 0);
-	gl.vertexAttrib4f(vColor, 0.5, 0.5, 0.5, 1);
+	gl.disableVertexAttribArray(vColor);
+	gl.vertexAttrib4f(vColor, 0.6, 0.6, 0.6, 1);
 
+	gl.bindBuffer(gl.ARRAY_BUFFER, vBuffer);
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(getGridVertices()), gl.STATIC_DRAW);
 	gl.drawArrays(gl.LINES, 0, 60);
 }

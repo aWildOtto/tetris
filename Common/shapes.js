@@ -99,7 +99,6 @@ function Shape(game) {
 		occupyShape(this.shape, false);
 		for (let index of this.shape) {
 			if (game.checkOccupy(index + 10 * s)) {
-				console.log("overlap", index + 10 * s);
 				occupyShape(this.shape, true, this.color);
 				this.shape = null;
 				return false;
@@ -117,7 +116,7 @@ function Shape(game) {
 			game.occupyBlock(v, occupyFlag, color);
 		})
 	}
-	function genRandomShape(shapeColor) {
+	function genRandomShape() {
 		var randomNum = getRandomInt(0, 6);
 		var randomStartingShift;
 		var shape;
@@ -161,7 +160,7 @@ function Shape(game) {
 				break;
 		}
 		shape = shape.map((i) => {
-			return i + 10 + randomStartingShift;
+			return i + 20 + randomStartingShift;
 		});
 		var randomRotate = getRandomInt(0, 3);
 		for (let i = 0; i < randomRotate; i++) {
@@ -172,10 +171,10 @@ function Shape(game) {
 				return null;
 			}
 		}
-		occupyShape(shape, true, shapeColor);
+		occupyShape(shape, true, theShape.color);
 		return shape;
 	}
-	this.shape = genRandomShape(this.color);
+	this.shape = genRandomShape();
 }
 
 function getRandomInt(min, max) {
