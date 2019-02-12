@@ -15,10 +15,53 @@
     line-height: 1.42857;
 }
 .btn-circle.btn-xl {
-    width: 70px;
-    height: 70px;
+    width: 130px;
+    height: 130px;
     padding: 10px 16px;
     border-radius: 35px;
     font-size: 24px;
     line-height: 1.33;
+}
+
+.overlay {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0.5,0.5,0.5,0.2);
+    z-index: 2;
+    cursor: pointer;
+}
+
+#top-overlay {
+    height: 30%;
+    bottom: 30%;
+}
+#left-overlay {
+    top: 30%;
+    height: 40%;
+    width: 50%;
+    right: 50%;
+}
+#right-overlay {
+    top: 30%;
+    height: 40%;
+    width: 50%;
+    left: 50%;
+}
+#bottom-overlay {
+    top: 70%;
+    height: 30%;
+}
+
+.overlay-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 20px;
+    color: grey;
+    transform: translate(-50%,-50%);
+    -ms-transform: translate(-50%,-50%);
 }

@@ -13,48 +13,6 @@ var gameStatus;
 var gameInprogress;
 var score;
 
-function virtualBtn(event) {
-	console.log(event);
-	switch (event.target.id) {
-		case "leftBtn":
-			console.log("left");
-			currentShape.shiftByX(-1);
-			render(currentGame);
-			break;
-		case "rightBtn":
-			console.log("right");
-			currentShape.shiftByX(1);
-			render(currentGame);
-			break;
-		case "downBtn":
-			console.log("speedUp");
-			dropCurrentShape(currentShape, currentGame);
-			if (!currentShape.shape) {
-				currentShape = new Shape(currentGame);
-			}
-			render(currentGame);
-			break;
-		case "spaceBtn":
-			console.log("Drop to bottom");
-			do {
-				dropCurrentShape(currentShape, currentGame);
-			} while (dropCurrentShape(currentShape, currentGame));
-
-			if (!currentShape.shape) {
-				currentShape = new Shape(currentGame);
-			}
-			render(currentGame);
-			break;
-		case "upBtn":
-			console.log("rotate");
-			currentShape.rotate();
-			render(currentGame);
-			break;
-
-		default:
-			break;
-	}
-}
 // Getting the keyboard input
 window.addEventListener("keydown", getKey, false);
 var pauseBtn = document.getElementById("pauseBtn");
@@ -194,7 +152,7 @@ function randomColor() {
 
 
 window.onload = function init() {
-
+	setMobileControls();
 	canvas = document.getElementById("gl-canvas");
 
 	gl = WebGLUtils.setupWebGL(canvas);
@@ -267,15 +225,7 @@ function pausOrResumeeGame() {
 		mainLoop();
 	}
 }
-function gamePause() {
-	gameInprogress = false;
-	updateGameStatus("Game paused");
-}
-function gameResume() {
-	gameInprogress = true;
-	updateGameStatus("Game In Progress");
-	mainLoop();
-}
+
 function render(currentGame) {
 
 	// Binding the vertex buffer

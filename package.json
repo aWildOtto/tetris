@@ -1,0 +1,15 @@
+{
+  "name": "tetris",
+  "version": "1.0.0",
+  "description": "By Zhixuan(Otto) Hu",
+  "main": "tetris.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@csil-git1.cs.surrey.sfu.ca:ohu/tetris.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
