@@ -19,9 +19,46 @@ var pauseBtn = document.getElementById("pauseBtn");
 var pressed = 0;
 function restartGame() {
 	gameOver();
+	updateGameStatus("Restarting");
 	setTimeout(() => {
 		startGame();
-	}, dropRate / 2);
+	}, dropRate);
+}
+function rotateShape() {
+	console.log("rotate");
+	hideOverlay("top");
+	currentShape.rotate();
+	render(currentGame);
+}
+function shiftLeftOrRight(x) {
+	if (x === 1) {
+		hideOverlay("right");
+	} else {
+		hideOverlay("left");
+	}
+	currentShape.shiftByX(x);
+	render(currentGame);
+}
+function speedUpShape() {
+	hideOverlay("bottom");
+	console.log("speedUp");
+	dropCurrentShape(currentShape, currentGame);
+	if (!currentShape.shape) {
+		currentShape = new Shape(currentGame);
+	}
+	render(currentGame);
+}
+function dropToBottom() {
+	hideOverlay("bottom");
+	console.log("Drop to bottom");
+	do {
+		dropCurrentShape(currentShape, currentGame);
+	} while (dropCurrentShape(currentShape, currentGame));
+
+	if (!currentShape.shape) {
+		currentShape = new Shape(currentGame);
+	}
+	render(currentGame);
 }
 function getKey(event) {
 	if (event.code == "KeyQ") {
@@ -37,38 +74,19 @@ function getKey(event) {
 		return;
 	}
 	if (event.code == "ArrowUp") {
-		console.log("rotate");
-		currentShape.rotate();
-		render(currentGame);
+		rotateShape();
 	}
 	if (event.code == "ArrowLeft") {
-		console.log("left");
-		currentShape.shiftByX(-1);
-		render(currentGame);
+		shiftLeftOrRight(-1);
 	}
 	if (event.code == "ArrowRight") {
-		console.log("right");
-		currentShape.shiftByX(1);
-		render(currentGame);
+		shiftLeftOrRight(1);
 	}
 	if (event.code == "ArrowDown") {
-		console.log("speedUp");
-		dropCurrentShape(currentShape, currentGame);
-		if (!currentShape.shape) {
-			currentShape = new Shape(currentGame);
-		}
-		render(currentGame);
+		speedUpShape();
 	}
 	if (event.code == "Space") {
-		console.log("Drop to bottom");
-		do {
-			dropCurrentShape(currentShape, currentGame);
-		} while (dropCurrentShape(currentShape, currentGame));
-
-		if (!currentShape.shape) {
-			currentShape = new Shape(currentGame);
-		}
-		render(currentGame);
+		dropToBottom();
 	}
 }
 function initGameParam() {
